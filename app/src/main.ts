@@ -37,7 +37,7 @@ function loadSiteAssets(terrainId: string): Promise<SiteAssets> {
   return assets;
 }
 
-const NO_AIDS = { liftOverlay: false, coreMarker: false, circleCenter: false, climbTrail: false };
+const NO_AIDS = { liftOverlay: false, coreMarker: false, climbTrail: false };
 
 class Game {
   private readonly app: Application;
@@ -72,6 +72,7 @@ class Game {
     this.terrain = assets.terrain;
     this.view = new FlightView(app, assets.texture, assets.terrain.meta);
     this.view.orientation = this.settings.orientation;
+    this.view.showHotspots = this.settings.showHotspots;
     this.input = new ControlInput({ left: $('brake-left'), right: $('brake-right') });
     this.sound.setEnabled(this.settings.sound);
 
@@ -89,7 +90,7 @@ class Game {
 
   /** Shows the start area of the selected site behind the menu. */
   private showSitePreview(): void {
-    this.flight = new Flight(createSetup(this.site, LESSONS[0], 1), this.terrain.terrain);
+    this.flight = new Flight(createSetup(this.site, LESSONS[0], 1, this.terrain.meta.hotspots), this.terrain.terrain);
     this.view.setFlight(this.flight, NO_AIDS);
   }
 
@@ -148,10 +149,10 @@ class Game {
     if (request !== this.siteRequest) return;
 
     if (assets.terrain !== this.terrain) {
-      const { zoom, orientation } = this.view;
+      const { zoom, orientation, showHotspots } = this.view;
       this.view.destroy();
       this.view = new FlightView(this.app, assets.texture, assets.terrain.meta);
-      Object.assign(this.view, { zoom, orientation });
+      Object.assign(this.view, { zoom, orientation, showHotspots });
       this.terrain = assets.terrain;
     }
     this.showSitePreview();
@@ -222,7 +223,7 @@ class Game {
     const unlock = this.sound.unlock().catch(() => undefined);
     this.dialog.close();
     this.lesson = lesson;
-    this.flight = new Flight(createSetup(this.site, lesson, Math.floor(Math.random() * 2 ** 31)), this.terrain.terrain);
+    this.flight = new Flight(createSetup(this.site, lesson, Math.floor(Math.random() * 2 ** 31), this.terrain.meta.hotspots), this.terrain.terrain);
     this.view.setFlight(this.flight, lesson.aids);
     this.input.reset();
 
@@ -230,7 +231,6 @@ class Game {
     $('game-ui').hidden = false;
     $('legend').hidden = !(lesson.aids.climbTrail || lesson.aids.liftOverlay);
     $('legend-core').hidden = !lesson.aids.coreMarker;
-    $('legend-circle').hidden = !lesson.aids.circleCenter;
 
     this.state = 'flying';
     this.updateHud();
@@ -377,6 +377,15 @@ class Game {
             saveSettings(this.settings);
           }),
         ]),
+        el('div', { className: 'setting' }, [
+          el('span', { textContent: t('settings.hotspots') }),
+          segmented([[true, t('settings.on')], [false, t('settings.off')]], this.settings.showHotspots, (show) => {
+            this.settings.showHotspots = show;
+            this.view.showHotspots = show;
+            saveSettings(this.settings);
+          }),
+        ]),
+        el('p', { className: 'setting-hint', textContent: t('settings.hotspotsHint') }),
       ],
       [{ label: t('settings.close'), onClick: close }],
       close,

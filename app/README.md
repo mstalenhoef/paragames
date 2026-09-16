@@ -22,10 +22,11 @@ npm run terrain    # regenerate public/terrain/* from elevation tiles (network n
 ## Adding a site
 
 1. Add a `SiteConfig` in `scripts/build-terrain.ts` (origin, extent, takeoffs/landing/peaks from OpenStreetMap) and run `npm run terrain -- <id>`.
-2. Add a `Site` in `src/levels/sites.ts` with a thermal trigger (a sun-facing spur below takeoff works well) and a start bearing over lower terrain.
+2. Add a `Site` in `src/levels/sites.ts`: pick a kk7 hotspot from the generated `meta.json` as lesson thermal (high probability, within glide of the takeoff) and set the start bearing toward the takeoff. All other hotspots become weaker thermals automatically.
 3. `npm test` checks that every lesson starts clear of terrain and can reach its goal.
 
 ## Data
 
 - Elevation: AWS Terrain Tiles (Mapzen), including data © Land Salzburg and Land Kärnten / data.gv.at (CC BY 4.0) and EU-DEM (Copernicus)
 - Map features: © OpenStreetMap contributors (ODbL)
+- Thermal hotspots: [thermal.kk7.ch](https://thermal.kk7.ch) by M. von Känel, [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Non-commercial use only; data derived from it must be shared under the same license. For using the thermal raster tiles the author asks to be contacted first.

@@ -300,8 +300,7 @@ button.round {
   gap: 4px;
 }
 
-.marker-core,
-.marker-circle {
+.marker-core {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -310,11 +309,6 @@ button.round {
 
 .marker-core {
   border: 2px solid #d7263d;
-}
-
-.marker-circle {
-  background: white;
-  border: 1.5px solid #1d2a1d;
 }
 
 /* Brake sliders */
@@ -431,6 +425,12 @@ dialog p {
   justify-content: space-between;
   gap: 8px 12px;
   margin: 14px 0;
+}
+
+.setting-hint {
+  margin: -6px 0 8px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .segmented {

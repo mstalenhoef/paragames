@@ -2,13 +2,13 @@ import type { MessageKey } from '../i18n/index.ts';
 import type { FlightSetup } from '../sim/flight.ts';
 import { createRng, deg } from '../sim/math.ts';
 import type { ThermalConfig } from '../sim/thermal.ts';
+import type { ThermalHotspot } from '../terrain/types.ts';
 import type { Site } from './sites.ts';
 
 export interface LessonAids {
   /** Heatmap of vertical air speed at the glider's altitude. */
   liftOverlay: boolean;
   coreMarker: boolean;
-  circleCenter: boolean;
   /** Color the trail by climb rate. */
   climbTrail: boolean;
 }
@@ -29,7 +29,7 @@ export const LESSONS: Lesson[] = [
     id: 'intro',
     titleKey: 'level.intro.title',
     descriptionKey: 'level.intro.description',
-    aids: { liftOverlay: true, coreMarker: true, circleCenter: true, climbTrail: true },
+    aids: { liftOverlay: true, coreMarker: true, climbTrail: true },
     complexity: 1,
     goalGain: 400,
   },
@@ -37,7 +37,7 @@ export const LESSONS: Lesson[] = [
     id: 'trail',
     titleKey: 'level.trail.title',
     descriptionKey: 'level.trail.description',
-    aids: { liftOverlay: false, coreMarker: false, circleCenter: true, climbTrail: true },
+    aids: { liftOverlay: false, coreMarker: false, climbTrail: true },
     complexity: 1.5,
     goalGain: 500,
   },
@@ -45,14 +45,16 @@ export const LESSONS: Lesson[] = [
     id: 'vario',
     titleKey: 'level.vario.title',
     descriptionKey: 'level.vario.description',
-    aids: { liftOverlay: false, coreMarker: false, circleCenter: false, climbTrail: false },
+    aids: { liftOverlay: false, coreMarker: false, climbTrail: false },
     complexity: 2,
     goalGain: 600,
   },
 ];
 
 const START_DISTANCE = 320;
-const START_HEIGHT = 300;
+const START_HEIGHT = 350;
+/** Other hotspots closer than this to the lesson thermal are skipped so they do not merge with it. */
+const MIN_HOTSPOT_SEPARATION = 500;
 
 function createThermal(site: Site, lesson: Lesson, seed: number): ThermalConfig {
   const rng = createRng(seed);
@@ -83,12 +85,37 @@ function createThermal(site: Site, lesson: Lesson, seed: number): ThermalConfig 
   };
 }
 
+function hotspotThermals(site: Site, seed: number, hotspots: readonly ThermalHotspot[]): ThermalConfig[] {
+  const rng = createRng(seed ^ 0x9e3779b9);
+  return hotspots
+    .filter((h) => Math.hypot(h.x - site.trigger.x, h.y - site.trigger.y) >= MIN_HOTSPOT_SEPARATION)
+    .map((h) => createHotspotThermal(site, h, rng));
+}
+
+/** A weaker single-core thermal at another hotspot; strength scales with its kk7 probability. */
+function createHotspotThermal(site: Site, hotspot: ThermalHotspot, rng: () => number): ThermalConfig {
+  const between = (min: number, max: number) => min + (max - min) * rng();
+  return {
+    x: hotspot.x,
+    y: hotspot.y,
+    baseAltitude: hotspot.elevation - 10,
+    topAltitude: Math.max(site.thermalTop, hotspot.elevation + 800),
+    cores: [{ dx: 0, dy: 0, radius: between(30, 42), strength: hotspot.probability * between(2.2, 3.4), phase: between(0, Math.PI * 2) }],
+    sinkRing: between(0.8, 1.3),
+    pulsePeriod: between(40, 80),
+    pulseAmplitude: 0.15,
+  };
+}
+
 export function goalAltitude(site: Site, lesson: Lesson): number {
   return Math.round((site.trigger.ground + START_HEIGHT + lesson.goalGain) / 50) * 50;
 }
 
-/** Builds a flight; the seed varies the thermal so it cannot be memorized. */
-export function createSetup(site: Site, lesson: Lesson, seed: number): FlightSetup {
+/**
+ * Builds a flight; the seed varies the thermals so they cannot be memorized.
+ * The lesson thermal sits at the site's trigger; the other hotspots get weaker thermals.
+ */
+export function createSetup(site: Site, lesson: Lesson, seed: number, hotspots: readonly ThermalHotspot[] = []): FlightSetup {
   const bearing = deg(site.startBearing);
   const start = {
     x: site.trigger.x + Math.sin(bearing) * START_DISTANCE,
@@ -102,6 +129,10 @@ export function createSetup(site: Site, lesson: Lesson, seed: number): FlightSet
       heading: Math.atan2(site.trigger.x - start.x, site.trigger.y - start.y) + deg(8),
     },
     goalAltitude: goalAltitude(site, lesson),
-    air: { wind: { x: 0, y: 0 }, ambient: -0.1, thermals: [createThermal(site, lesson, seed)] },
+    air: {
+      wind: { x: 0, y: 0 },
+      ambient: -0.1,
+      thermals: [createThermal(site, lesson, seed), ...hotspotThermals(site, seed, hotspots)],
+    },
   };
 }

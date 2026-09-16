@@ -143,8 +143,101 @@
       "elevation": 2167
     }
   ],
+  "hotspots": [
+    {
+      "x": 1728,
+      "y": -746,
+      "elevation": 1794,
+      "probability": 0.997
+    },
+    {
+      "x": 3850,
+      "y": -333,
+      "elevation": 1838,
+      "probability": 0.959
+    },
+    {
+      "x": -2957,
+      "y": 1215,
+      "elevation": 1523,
+      "probability": 0.958
+    },
+    {
+      "x": 563,
+      "y": 2428,
+      "elevation": 1783,
+      "probability": 0.94
+    },
+    {
+      "x": -1611,
+      "y": 802,
+      "elevation": 1442,
+      "probability": 0.933
+    },
+    {
+      "x": -2594,
+      "y": 2118,
+      "elevation": 1830,
+      "probability": 0.905
+    },
+    {
+      "x": 744,
+      "y": -2578,
+      "elevation": 1514,
+      "probability": 0.869
+    },
+    {
+      "x": 1961,
+      "y": 2763,
+      "elevation": 2049,
+      "probability": 0.831
+    },
+    {
+      "x": 1728,
+      "y": -1572,
+      "elevation": 1499,
+      "probability": 0.812
+    },
+    {
+      "x": 97,
+      "y": -333,
+      "elevation": 1285,
+      "probability": 0.79
+    },
+    {
+      "x": 563,
+      "y": 338,
+      "elevation": 1409,
+      "probability": 0.747
+    },
+    {
+      "x": -84,
+      "y": -2243,
+      "elevation": 1391,
+      "probability": 0.745
+    },
+    {
+      "x": 1624,
+      "y": -2449,
+      "elevation": 1483,
+      "probability": 0.702
+    },
+    {
+      "x": -2154,
+      "y": 1421,
+      "elevation": 1515,
+      "probability": 0.702
+    },
+    {
+      "x": 1366,
+      "y": 2195,
+      "elevation": 1805,
+      "probability": 0.644
+    }
+  ],
   "attribution": [
     "Terrain: AWS Terrain Tiles (Mapzen), incl. data © Land Salzburg / data.gv.at, CC BY 4.0",
-    "Map features: © OpenStreetMap contributors, ODbL"
+    "Map features: © OpenStreetMap contributors, ODbL",
+    "Thermal hotspots: thermal.kk7.ch by M. von Känel, CC BY-NC-SA 4.0"
   ]
 }

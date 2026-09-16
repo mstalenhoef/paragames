@@ -1,7 +1,7 @@
 import { Application, Container, Graphics, Sprite, Text, Texture, type TextStyleOptions } from 'pixi.js';
 import type { LessonAids } from '../levels/lessons.ts';
 import type { Flight } from '../sim/flight.ts';
-import type { TerrainMeta } from '../terrain/types.ts';
+import type { TerrainMeta, ThermalHotspot } from '../terrain/types.ts';
 import { climbColor, climbColorRgb } from './colors.ts';
 
 export type MapOrientation = 'northUp' | 'headingUp';
@@ -44,10 +44,13 @@ export class FlightView {
   private readonly trailGraphics = new Graphics();
   private readonly trailHead = new Graphics();
   private readonly markers = new Graphics();
+  private readonly hotspots = new Graphics();
   private readonly labels = new Container();
   private readonly glider = new Graphics();
   private readonly featureLabels: FeatureLabel[] = [];
 
+  private readonly hotspotData: ThermalHotspot[];
+  private drawnHotspotZoom = 0;
   private flight: Flight | null = null;
   private aids: LessonAids | null = null;
   private drawnTrailLength = -1;
@@ -68,7 +71,9 @@ export class FlightView {
     this.overlaySprite.scale.set(OVERLAY_CELL_SIZE);
     this.overlaySprite.visible = false;
 
-    this.world.addChild(terrain, this.overlaySprite, this.trailGraphics, this.trailHead, this.markers);
+    this.hotspotData = meta.hotspots;
+    this.hotspots.visible = false;
+    this.world.addChild(terrain, this.hotspots, this.overlaySprite, this.trailGraphics, this.trailHead, this.markers);
     this.camera.addChild(this.world);
     app.stage.addChild(this.camera, this.labels, this.glider);
 
@@ -103,6 +108,14 @@ export class FlightView {
     this.overlaySprite.visible = aids.liftOverlay;
   }
 
+  get showHotspots(): boolean {
+    return this.hotspots.visible;
+  }
+
+  set showHotspots(show: boolean) {
+    this.hotspots.visible = show;
+  }
+
   zoomBy(factor: number): void {
     this.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, this.zoom * factor));
   }
@@ -126,10 +139,23 @@ export class FlightView {
     this.glider.position.set(width / 2, centerY);
     this.glider.rotation = heading + rotation;
 
+    if (this.hotspots.visible && this.drawnHotspotZoom !== this.zoom) this.renderHotspots();
     this.renderTrail(flight, aids);
     this.renderMarkers(flight, aids);
     if (aids.liftOverlay && flight.t >= this.nextOverlayTime) this.renderOverlay(flight);
     this.renderLabels(x, y, rotation, width / 2, centerY);
+  }
+
+  /** kk7 hotspots as rings sized in screen pixels, more opaque with higher probability. */
+  private renderHotspots(): void {
+    const g = this.hotspots.clear();
+    const px = 1 / this.zoom;
+    for (const h of this.hotspotData) {
+      const alpha = 0.35 + 0.6 * h.probability;
+      g.circle(h.x, -h.y, 11 * px).fill({ color: 0xffb020, alpha: alpha * 0.35 }).stroke({ width: 2.5 * px, color: 0xe8590c, alpha });
+      g.circle(h.x, -h.y, 3 * px).fill({ color: 0xe8590c, alpha });
+    }
+    this.drawnHotspotZoom = this.zoom;
   }
 
   private renderTrail(flight: Flight, aids: LessonAids): void {
@@ -169,14 +195,6 @@ export class FlightView {
         g.circle(core.x, -core.y, 9 * px).stroke({ width: 2.5 * px, color: 0xd7263d });
         g.moveTo(core.x - 15 * px, -core.y).lineTo(core.x + 15 * px, -core.y).stroke({ width: 1.5 * px, color: 0xd7263d });
         g.moveTo(core.x, -core.y - 15 * px).lineTo(core.x, -core.y + 15 * px).stroke({ width: 1.5 * px, color: 0xd7263d });
-      }
-    }
-
-    if (aids.circleCenter) {
-      const center = flight.turnCenter;
-      if (center && Math.abs(flight.glider.bank) > 0.15) {
-        g.circle(center.x, -center.y, flight.turnRadius).stroke({ width: 1.5 * px, color: 0xffffff, alpha: 0.6 });
-        g.circle(center.x, -center.y, 4 * px).fill({ color: 0xffffff }).stroke({ width: 1.5 * px, color: 0x1d2a1d });
       }
     }
   }

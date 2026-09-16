@@ -12,7 +12,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { createProjection, type LatLon } from '../src/terrain/geo.ts';
-import type { MapFeature, TerrainMeta } from '../src/terrain/types.ts';
+import type { MapFeature, TerrainMeta, ThermalHotspot } from '../src/terrain/types.ts';
 
 interface SiteConfig {
   id: string;
@@ -122,6 +122,9 @@ const GREIFENBURG: SiteConfig = {
 
 const SITES = [WERFENWENG, AHORNACH_SPEIKBODEN, GREIFENBURG];
 
+const KK7_HOTSPOTS_URL = 'https://thermal.kk7.ch/api/hotspots/geojson/all_all';
+const KK7_ATTRIBUTION = 'Thermal hotspots: thermal.kk7.ch by M. von Känel, CC BY-NC-SA 4.0';
+
 const TILE_SIZE = 256;
 const TILE_URL = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium';
 const root = path.resolve(import.meta.dirname, '..');
@@ -230,6 +233,25 @@ function boxBlur(data: Float32Array, w: number, h: number): void {
   }
 }
 
+interface HotspotCollection {
+  features: { geometry: { coordinates: [number, number] }; properties: { probability: number } }[];
+}
+
+/** Thermal hotspots (all seasons, all day) for a bounding box, cached in .cache/kk7. */
+async function fetchHotspots(siteId: string, sw: LatLon, ne: LatLon): Promise<HotspotCollection> {
+  const file = path.join(root, '.cache/kk7', `${siteId}.json`);
+  if (!existsSync(file)) {
+    const bbox = [sw.lat, sw.lon, ne.lat, ne.lon].map((v) => v.toFixed(3)).join(',');
+    const url = `${KK7_HOTSPOTS_URL}/${bbox}?limit=250`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
+    await mkdir(path.dirname(file), { recursive: true });
+    await writeFile(file, await res.text());
+    console.log(`downloaded ${url}`);
+  }
+  return JSON.parse(await readFile(file, 'utf8')) as HotspotCollection;
+}
+
 async function build(site: SiteConfig): Promise<void> {
   const projection = createProjection(site.origin);
   const minX = -site.halfWidth;
@@ -302,6 +324,17 @@ async function build(site: SiteConfig): Promise<void> {
     .webp({ quality: 82 })
     .toFile(path.join(outDir, 'map.webp'));
 
+  const hotspotData = await fetchHotspots(site.id, projection.toLatLon(minX, minY), projection.toLatLon(maxX, maxY));
+  const hotspots: ThermalHotspot[] = hotspotData.features
+    .map((f) => {
+      const [lon, lat] = f.geometry.coordinates;
+      const { x, y } = projection.toLocal({ lat, lon });
+      return { x: Math.round(x), y: Math.round(y), elevation: 0, probability: f.properties.probability };
+    })
+    .filter((h) => h.x > minX && h.x < maxX && h.y > minY && h.y < maxY)
+    .map((h) => ({ ...h, elevation: Math.round(elevationAt(h.x, h.y)) }))
+    .sort((a, b) => b.probability - a.probability);
+
   const meta: TerrainMeta = {
     id: site.id,
     name: site.name,
@@ -316,14 +349,17 @@ async function build(site: SiteConfig): Promise<void> {
       const { x, y } = projection.toLocal({ lat, lon });
       return { ...f, x: Math.round(x), y: Math.round(y), elevation: Math.round(elevationAt(x, y)) };
     }),
+    hotspots,
     attribution: [
       `Terrain: AWS Terrain Tiles (Mapzen), incl. ${site.elevationAttribution}`,
       'Map features: © OpenStreetMap contributors, ODbL',
+      KK7_ATTRIBUTION,
     ],
   };
   await writeFile(path.join(outDir, 'meta.json'), JSON.stringify(meta, null, 2) + '\n');
   console.log(`${site.id}: grid ${cols}x${rows}, image ${width}x${height}`);
   for (const f of meta.features) console.log(`  ${f.kind.padEnd(8)} ${f.name.padEnd(16)} x=${f.x} y=${f.y} ele=${f.elevation}`);
+  for (const h of hotspots) console.log(`  hotspot  p=${h.probability.toFixed(3)}          x=${h.x} y=${h.y} ele=${h.elevation}`);
 }
 
 const requested = process.argv.slice(2);

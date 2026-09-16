@@ -10,6 +10,15 @@ export interface MapFeature {
   elevation: number;
 }
 
+/** Thermal trigger point from thermal.kk7.ch, derived from recorded flights. */
+export interface ThermalHotspot {
+  x: number;
+  y: number;
+  elevation: number;
+  /** Probability (0..1) of finding usable lift here when flying over it. */
+  probability: number;
+}
+
 /** Metadata written by scripts/build-terrain.ts next to the height grid and map image. */
 export interface TerrainMeta {
   id: string;
@@ -35,5 +44,7 @@ export interface TerrainMeta {
     metersPerPixel: number;
   };
   features: MapFeature[];
+  /** Sorted by probability, highest first. */
+  hotspots: ThermalHotspot[];
   attribution: string[];
 }

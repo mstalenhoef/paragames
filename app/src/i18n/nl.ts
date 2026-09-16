@@ -56,6 +56,8 @@ export const nl = {
   'settings.mapOrientation': 'Kaartoriëntatie',
   'settings.northUp': 'Noorden boven',
   'settings.headingUp': 'Vliegrichting boven',
+  'settings.hotspots': 'Thermiek-hotspots',
+  'settings.hotspotsHint': 'Plekken waar vaak thermiek gevonden wordt, volgens duizenden vluchten (thermal.kk7.ch). Hoe feller, hoe groter de kans.',
   'settings.close': 'Sluiten',
   'settings.on': 'Aan',
   'settings.off': 'Uit',
@@ -63,7 +65,6 @@ export const nl = {
   'legend.lift': 'Stijgen',
   'legend.sink': 'Dalen',
   'legend.core': 'Kern',
-  'legend.circleCenter': 'Middelpunt van je cirkel',
 
   'loading': 'Laden…',
   'error.loading': 'Kon de kaart niet laden.',

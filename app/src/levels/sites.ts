@@ -2,11 +2,14 @@ export interface Site {
   id: string;
   name: string;
   terrainId: string;
-  /** Thermal trigger on the ground, local meters relative to the terrain origin (see public/terrain/<id>/meta.json). */
+  /**
+   * Thermal trigger for the lessons: a thermal.kk7.ch hotspot from public/terrain/<terrainId>/meta.json,
+   * in local meters relative to the terrain origin.
+   */
   trigger: { x: number; y: number; ground: number };
-  /** Compass bearing (degrees) from the trigger to the start position, over lower terrain. */
+  /** Compass bearing (degrees) from the trigger to the start position; points back toward the takeoff. */
   startBearing: number;
-  /** Top of the thermal, m MSL. */
+  /** Top of the thermals, m MSL. */
   thermalTop: number;
 }
 
@@ -15,37 +18,37 @@ export const SITES: Site[] = [
     id: 'werfenweng',
     name: 'Werfenweng',
     terrainId: 'werfenweng',
-    // Wiesegg spur between Bischling takeoff and the landing field.
-    trigger: { x: 289, y: -63, ground: 1309 },
-    startBearing: 129,
+    // Hotspot p=0,79 near Wiesegg, on the glide from Bischling to the landing field.
+    trigger: { x: 97, y: -333, ground: 1285 },
+    startBearing: 101,
     thermalTop: 2700,
   },
   {
     id: 'ahornach',
     name: 'Ahornach',
     terrainId: 'ahornach-speikboden',
-    // South-facing spur below the Ahornach takeoff, above Sand in Taufers.
-    trigger: { x: 2134, y: -174, ground: 1162 },
-    startBearing: 209,
+    // Hotspot p=0,82 just in front of the Ahornach takeoff.
+    trigger: { x: 2237, y: 176, ground: 1380 },
+    startBearing: 94,
     thermalTop: 2700,
   },
   {
     id: 'speikboden',
     name: 'Speikboden',
     terrainId: 'ahornach-speikboden',
-    // South-west ridge below the Speikboden takeoff.
-    trigger: { x: -1987, y: -1656, ground: 2114 },
-    startBearing: 221,
-    thermalTop: 3400,
+    // Hotspot p=0,99 on the ridge east of the Speikboden takeoff.
+    trigger: { x: -1790, y: -1492, ground: 2253 },
+    startBearing: 295,
+    thermalTop: 3600,
   },
   {
     id: 'greifenburg',
     name: 'Greifenburg',
     terrainId: 'greifenburg',
-    // South-facing spur west of the Emberger Alm takeoff.
-    trigger: { x: -2496, y: -363, ground: 1317 },
-    startBearing: 174,
-    thermalTop: 2800,
+    // Hotspot p=0,94 below the Emberger Alm takeoff.
+    trigger: { x: -1127, y: 10, ground: 1547 },
+    startBearing: 322,
+    thermalTop: 2900,
   },
 ];
 

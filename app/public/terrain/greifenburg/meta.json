@@ -108,8 +108,95 @@
       "elevation": 2264
     }
   ],
+  "hotspots": [
+    {
+      "x": -1127,
+      "y": 10,
+      "elevation": 1547,
+      "probability": 0.937
+    },
+    {
+      "x": -2333,
+      "y": 298,
+      "elevation": 1571,
+      "probability": 0.901
+    },
+    {
+      "x": -4798,
+      "y": 1108,
+      "elevation": 2021,
+      "probability": 0.774
+    },
+    {
+      "x": 3200,
+      "y": 1526,
+      "elevation": 1911,
+      "probability": 0.745
+    },
+    {
+      "x": -1232,
+      "y": 925,
+      "elevation": 1797,
+      "probability": 0.737
+    },
+    {
+      "x": 3725,
+      "y": 873,
+      "elevation": 1765,
+      "probability": 0.724
+    },
+    {
+      "x": -2307,
+      "y": 1134,
+      "elevation": 1931,
+      "probability": 0.677
+    },
+    {
+      "x": 1496,
+      "y": 533,
+      "elevation": 1591,
+      "probability": 0.662
+    },
+    {
+      "x": -4431,
+      "y": 350,
+      "elevation": 1727,
+      "probability": 0.652
+    },
+    {
+      "x": -3041,
+      "y": 2989,
+      "elevation": 2500,
+      "probability": 0.649
+    },
+    {
+      "x": -1861,
+      "y": -382,
+      "elevation": 1384,
+      "probability": 0.629
+    },
+    {
+      "x": 1968,
+      "y": -147,
+      "elevation": 1410,
+      "probability": 0.596
+    },
+    {
+      "x": 1810,
+      "y": 1814,
+      "elevation": 1952,
+      "probability": 0.588
+    },
+    {
+      "x": 4302,
+      "y": 271,
+      "elevation": 1433,
+      "probability": 0.551
+    }
+  ],
   "attribution": [
     "Terrain: AWS Terrain Tiles (Mapzen), incl. data © Land Kärnten / data.gv.at, CC BY 4.0",
-    "Map features: © OpenStreetMap contributors, ODbL"
+    "Map features: © OpenStreetMap contributors, ODbL",
+    "Thermal hotspots: thermal.kk7.ch by M. von Känel, CC BY-NC-SA 4.0"
   ]
 }

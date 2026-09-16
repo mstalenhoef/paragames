@@ -115,8 +115,71 @@
       "elevation": 2239
     }
   ],
+  "hotspots": [
+    {
+      "x": -2915,
+      "y": -1309,
+      "elevation": 2320,
+      "probability": 0.995
+    },
+    {
+      "x": -1790,
+      "y": -1492,
+      "elevation": 2253,
+      "probability": 0.994
+    },
+    {
+      "x": -1816,
+      "y": -658,
+      "elevation": 2161,
+      "probability": 0.947
+    },
+    {
+      "x": 2237,
+      "y": 176,
+      "elevation": 1380,
+      "probability": 0.819
+    },
+    {
+      "x": 3753,
+      "y": -3187,
+      "elevation": 2139,
+      "probability": 0.755
+    },
+    {
+      "x": -3725,
+      "y": -1153,
+      "elevation": 2246,
+      "probability": 0.718
+    },
+    {
+      "x": 4721,
+      "y": -3135,
+      "elevation": 2567,
+      "probability": 0.675
+    },
+    {
+      "x": 4982,
+      "y": 2053,
+      "elevation": 2424,
+      "probability": 0.662
+    },
+    {
+      "x": -3385,
+      "y": -1987,
+      "elevation": 1950,
+      "probability": 0.659
+    },
+    {
+      "x": -980,
+      "y": -1336,
+      "elevation": 2235,
+      "probability": 0.6
+    }
+  ],
   "attribution": [
     "Terrain: AWS Terrain Tiles (Mapzen), incl. EU-DEM, produced using Copernicus data",
-    "Map features: © OpenStreetMap contributors, ODbL"
+    "Map features: © OpenStreetMap contributors, ODbL",
+    "Thermal hotspots: thermal.kk7.ch by M. von Känel, CC BY-NC-SA 4.0"
   ]
 }
