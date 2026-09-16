@@ -1,4 +1,4 @@
-import { createGlider, stepGlider, turnRadius, DEFAULT_GLIDER, type Controls, type GliderParams, type GliderState } from './glider.ts';
+import { createGlider, stepGlider, DEFAULT_GLIDER, type Controls, type GliderParams, type GliderState } from './glider.ts';
 import type { Vec2 } from './math.ts';
 import type { Terrain } from './terrain.ts';
 import { Thermal, type CoreLocation, type ThermalConfig } from './thermal.ts';
@@ -81,19 +81,6 @@ export class Flight {
 
   get altitudeGain(): number {
     return this.maxAltitude - this.setup.start.z;
-  }
-
-  /** Current circle radius in the air mass, or Infinity when flying straight. */
-  get turnRadius(): number {
-    return turnRadius(this.glider.airspeed, this.glider.bank);
-  }
-
-  /** Center of the current circle in the air mass (ignores wind). */
-  get turnCenter(): Vec2 | null {
-    const r = this.turnRadius;
-    if (!Number.isFinite(r) || r > 150) return null;
-    const side = this.glider.heading + (Math.sign(this.glider.bank) * Math.PI) / 2;
-    return { x: this.glider.x + Math.sin(side) * r, y: this.glider.y + Math.cos(side) * r };
   }
 
   /** Strongest thermal core near the glider's altitude, if any. */

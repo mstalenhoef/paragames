@@ -15,7 +15,8 @@ export const nl = {
     'Wordt het stijgen weer zwakker, verkrap dan je bocht zodat je in het goede deel blijft. ' +
     'Een steilere bocht is krapper, maar je daalt er ook sneller mee.',
   'howToPlay.controlsTouch': 'Telefoon: houd de linker- of rechterrem ingedrukt en schuif omlaag voor meer rem.',
-  'howToPlay.controlsKeyboard': 'Toetsenbord: ← en → (of A en D) voor links en rechts remmen. Spatie pauzeert, +/− zoomt.',
+  'howToPlay.controlsKeyboard':
+    'Toetsenbord: Z trekt de linkerrem aan, A laat hem vieren; M trekt de rechterrem aan, K laat hem vieren. De rem blijft staan waar je hem loslaat. Spatie pauzeert, +/− zoomt.',
 
   'level.intro.title': '1. De bel in beeld',
   'level.intro.description': 'De thermiek is zichtbaar op de kaart. Cirkel rond de kern en stijg naar {goal}.',

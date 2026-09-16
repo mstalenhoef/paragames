@@ -1,14 +1,27 @@
 import { clamp } from '../sim/math.ts';
 import type { Controls } from '../sim/glider.ts';
 
-const KEY_BRAKE_RATE = 1.2; // per second while held
-const KEY_RELEASE_RATE = 2.5; // per second after release
+/** Brake travel per second while a pull or release key is held. */
+const KEY_BRAKE_RATE = 0.8;
 
 type Side = 'left' | 'right';
 
+/** Physical key positions (KeyboardEvent.code): upper key releases, lower key pulls. */
+const KEY_BINDINGS: Record<Side, { pull: string; release: string }> = {
+  left: { pull: 'KeyZ', release: 'KeyA' },
+  right: { pull: 'KeyM', release: 'KeyK' },
+};
+
+/** Moves a keyboard brake; it stays where it is when no key is held, like holding a real brake toggle. */
+export function moveKeyBrake(position: number, pull: boolean, release: boolean, dt: number): number {
+  const direction = (pull ? 1 : 0) - (release ? 1 : 0);
+  return clamp(position + direction * KEY_BRAKE_RATE * dt, 0, 1);
+}
+
 /**
  * Combines touch brake sliders and keyboard into brake positions.
- * Touch sliders set the brake directly; keys ramp it up and down over time.
+ * Touch sliders set the brake directly and spring back on release;
+ * keys move the brake while held and leave it in place.
  */
 export class ControlInput {
   private readonly touch: Record<Side, number | null> = { left: null, right: null };
@@ -70,17 +83,12 @@ export class ControlInput {
     });
   }
 
-  private keyHeld(side: Side): boolean {
-    const codes = side === 'left' ? ['ArrowLeft', 'KeyA'] : ['ArrowRight', 'KeyD'];
-    return codes.some((c) => this.keysDown.has(c));
-  }
-
-  /** Advances keyboard ramps and returns the current brake positions. */
+  /** Advances keyboard brakes and returns the current brake positions. */
   update(dt: number): Controls {
     const result = { left: 0, right: 0 };
     for (const side of ['left', 'right'] as const) {
-      const rate = this.keyHeld(side) ? KEY_BRAKE_RATE : -KEY_RELEASE_RATE;
-      this.keyBrake[side] = clamp(this.keyBrake[side] + rate * dt, 0, 1);
+      const keys = KEY_BINDINGS[side];
+      this.keyBrake[side] = moveKeyBrake(this.keyBrake[side], this.keysDown.has(keys.pull), this.keysDown.has(keys.release), dt);
       result[side] = Math.max(this.touch[side] ?? 0, this.keyBrake[side]);
       const handle = this.handles[side];
       if (handle) handle.style.setProperty('--brake', result[side].toFixed(3));
