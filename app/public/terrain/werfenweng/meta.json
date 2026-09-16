@@ -1,0 +1,150 @@
+{
+  "id": "werfenweng",
+  "name": "Werfenweng",
+  "origin": {
+    "lat": 47.468,
+    "lon": 13.275
+  },
+  "minX": -4000,
+  "maxX": 4000,
+  "minY": -4000,
+  "maxY": 4000,
+  "height": {
+    "file": "height.bin",
+    "encoding": "uint16le-dm",
+    "cols": 801,
+    "rows": 801,
+    "spacing": 10
+  },
+  "image": {
+    "file": "map.webp",
+    "width": 2000,
+    "height": 2000,
+    "metersPerPixel": 4
+  },
+  "features": [
+    {
+      "kind": "takeoff",
+      "name": "Bischling West",
+      "x": 1663,
+      "y": -630,
+      "elevation": 1806
+    },
+    {
+      "kind": "takeoff",
+      "name": "Bischling Süd",
+      "x": 1739,
+      "y": -725,
+      "elevation": 1801
+    },
+    {
+      "kind": "takeoff",
+      "name": "Bischling Ost",
+      "x": 1821,
+      "y": -451,
+      "elevation": 1819
+    },
+    {
+      "kind": "landing",
+      "name": "Landeplatz",
+      "x": -406,
+      "y": -934,
+      "elevation": 931
+    },
+    {
+      "kind": "village",
+      "name": "Werfenweng",
+      "x": -1374,
+      "y": -717,
+      "elevation": 892
+    },
+    {
+      "kind": "village",
+      "name": "Zaglau",
+      "x": -25,
+      "y": -1077,
+      "elevation": 962
+    },
+    {
+      "kind": "village",
+      "name": "Wengerau",
+      "x": -349,
+      "y": 928,
+      "elevation": 987
+    },
+    {
+      "kind": "village",
+      "name": "Eulersberg",
+      "x": -1392,
+      "y": -2138,
+      "elevation": 914
+    },
+    {
+      "kind": "peak",
+      "name": "Bischlingshöhe",
+      "x": 1754,
+      "y": -598,
+      "elevation": 1833
+    },
+    {
+      "kind": "peak",
+      "name": "Wiesegg",
+      "x": 289,
+      "y": -63,
+      "elevation": 1309
+    },
+    {
+      "kind": "peak",
+      "name": "Hirschkogel",
+      "x": -1570,
+      "y": 937,
+      "elevation": 1477
+    },
+    {
+      "kind": "peak",
+      "name": "Ladenberg",
+      "x": 2063,
+      "y": 243,
+      "elevation": 1715
+    },
+    {
+      "kind": "peak",
+      "name": "Frommerkogel",
+      "x": 3950,
+      "y": -277,
+      "elevation": 1882
+    },
+    {
+      "kind": "peak",
+      "name": "Donneregg",
+      "x": 942,
+      "y": -2401,
+      "elevation": 1540
+    },
+    {
+      "kind": "peak",
+      "name": "Eiskogel",
+      "x": 530,
+      "y": 3176,
+      "elevation": 2319
+    },
+    {
+      "kind": "peak",
+      "name": "Hochthron",
+      "x": -2415,
+      "y": 2716,
+      "elevation": 2359
+    },
+    {
+      "kind": "peak",
+      "name": "Napf",
+      "x": 1273,
+      "y": 2914,
+      "elevation": 2167
+    }
+  ],
+  "attribution": [
+    "Terrain: AWS Terrain Tiles (Mapzen), incl. data © Land Salzburg / data.gv.at, CC BY 4.0",
+    "Map features: © OpenStreetMap contributors, ODbL"
+  ]
+}

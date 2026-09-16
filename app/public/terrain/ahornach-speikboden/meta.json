@@ -1,0 +1,122 @@
+{
+  "id": "ahornach-speikboden",
+  "name": "Ahornach / Speikboden",
+  "origin": {
+    "lat": 46.925,
+    "lon": 11.932
+  },
+  "minX": -5000,
+  "maxX": 5000,
+  "minY": -4000,
+  "maxY": 4000,
+  "height": {
+    "file": "height.bin",
+    "encoding": "uint16le-dm",
+    "cols": 1001,
+    "rows": 801,
+    "spacing": 10
+  },
+  "image": {
+    "file": "map.webp",
+    "width": 2500,
+    "height": 2000,
+    "metersPerPixel": 4
+  },
+  "features": [
+    {
+      "kind": "takeoff",
+      "name": "Ahornach",
+      "x": 2714,
+      "y": 146,
+      "elevation": 1429
+    },
+    {
+      "kind": "takeoff",
+      "name": "Speikboden",
+      "x": -2607,
+      "y": -1116,
+      "elevation": 2386
+    },
+    {
+      "kind": "landing",
+      "name": "Landeplatz",
+      "x": 2229,
+      "y": -1453,
+      "elevation": 857
+    },
+    {
+      "kind": "village",
+      "name": "Sand in Taufers",
+      "x": 1765,
+      "y": -640,
+      "elevation": 873
+    },
+    {
+      "kind": "village",
+      "name": "Ahornach",
+      "x": 3455,
+      "y": 107,
+      "elevation": 1349
+    },
+    {
+      "kind": "village",
+      "name": "Mühlen",
+      "x": 831,
+      "y": -2873,
+      "elevation": 858
+    },
+    {
+      "kind": "village",
+      "name": "Luttach",
+      "x": -821,
+      "y": 2897,
+      "elevation": 958
+    },
+    {
+      "kind": "peak",
+      "name": "Speikboden",
+      "x": -3179,
+      "y": -758,
+      "elevation": 2477
+    },
+    {
+      "kind": "peak",
+      "name": "Sonnklar Nock",
+      "x": -1838,
+      "y": -1086,
+      "elevation": 2349
+    },
+    {
+      "kind": "peak",
+      "name": "Großer Nock",
+      "x": -3315,
+      "y": 219,
+      "elevation": 2350
+    },
+    {
+      "kind": "peak",
+      "name": "Hühnerspiel",
+      "x": -1504,
+      "y": -78,
+      "elevation": 2059
+    },
+    {
+      "kind": "peak",
+      "name": "Steiner Holm",
+      "x": 1387,
+      "y": 2724,
+      "elevation": 2099
+    },
+    {
+      "kind": "peak",
+      "name": "Kleines Jöchl",
+      "x": 3568,
+      "y": 1940,
+      "elevation": 2239
+    }
+  ],
+  "attribution": [
+    "Terrain: AWS Terrain Tiles (Mapzen), incl. EU-DEM, produced using Copernicus data",
+    "Map features: © OpenStreetMap contributors, ODbL"
+  ]
+}

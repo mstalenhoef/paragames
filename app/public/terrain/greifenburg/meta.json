@@ -1,0 +1,115 @@
+{
+  "id": "greifenburg",
+  "name": "Greifenburg",
+  "origin": {
+    "lat": 46.768,
+    "lon": 13.175
+  },
+  "minX": -5000,
+  "maxX": 5000,
+  "minY": -4000,
+  "maxY": 4000,
+  "height": {
+    "file": "height.bin",
+    "encoding": "uint16le-dm",
+    "cols": 1001,
+    "rows": 801,
+    "spacing": 10
+  },
+  "image": {
+    "file": "map.webp",
+    "width": 2500,
+    "height": 2000,
+    "metersPerPixel": 4
+  },
+  "features": [
+    {
+      "kind": "takeoff",
+      "name": "Emberger Alm",
+      "x": -1916,
+      "y": 1017,
+      "elevation": 1887
+    },
+    {
+      "kind": "takeoff",
+      "name": "Rottenstein",
+      "x": 3949,
+      "y": 52,
+      "elevation": 1292
+    },
+    {
+      "kind": "landing",
+      "name": "Landeplatz",
+      "x": 1294,
+      "y": -2392,
+      "elevation": 590
+    },
+    {
+      "kind": "village",
+      "name": "Greifenburg",
+      "x": 413,
+      "y": -1933,
+      "elevation": 636
+    },
+    {
+      "kind": "village",
+      "name": "Berg",
+      "x": -2958,
+      "y": -2282,
+      "elevation": 686
+    },
+    {
+      "kind": "village",
+      "name": "Bruggen",
+      "x": 1487,
+      "y": -3162,
+      "elevation": 586
+    },
+    {
+      "kind": "peak",
+      "name": "Gaugen",
+      "x": 2611,
+      "y": 2084,
+      "elevation": 2195
+    },
+    {
+      "kind": "peak",
+      "name": "Dolzer",
+      "x": 2156,
+      "y": 2216,
+      "elevation": 2170
+    },
+    {
+      "kind": "peak",
+      "name": "Kreuzkofel",
+      "x": 3718,
+      "y": 1065,
+      "elevation": 1841
+    },
+    {
+      "kind": "peak",
+      "name": "Naßfeldriegel",
+      "x": -2157,
+      "y": 1841,
+      "elevation": 2237
+    },
+    {
+      "kind": "peak",
+      "name": "Hochtristen",
+      "x": -3023,
+      "y": 3048,
+      "elevation": 2535
+    },
+    {
+      "kind": "peak",
+      "name": "Schwarzstein",
+      "x": -1789,
+      "y": 3486,
+      "elevation": 2264
+    }
+  ],
+  "attribution": [
+    "Terrain: AWS Terrain Tiles (Mapzen), incl. data © Land Kärnten / data.gv.at, CC BY 4.0",
+    "Map features: © OpenStreetMap contributors, ODbL"
+  ]
+}

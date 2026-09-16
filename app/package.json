@@ -1,0 +1,24 @@
+{
+  "name": "thermiek-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "terrain": "node scripts/build-terrain.ts"
+  },
+  "dependencies": {
+    "pixi.js": "^8.20.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.5",
+    "sharp": "^0.35.4",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}
