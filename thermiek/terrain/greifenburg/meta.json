@@ -1,0 +1,202 @@
+{
+  "id": "greifenburg",
+  "name": "Greifenburg",
+  "origin": {
+    "lat": 46.768,
+    "lon": 13.175
+  },
+  "minX": -5000,
+  "maxX": 5000,
+  "minY": -4000,
+  "maxY": 4000,
+  "height": {
+    "file": "height.bin",
+    "encoding": "uint16le-dm",
+    "cols": 1001,
+    "rows": 801,
+    "spacing": 10
+  },
+  "image": {
+    "file": "map.webp",
+    "width": 2500,
+    "height": 2000,
+    "metersPerPixel": 4
+  },
+  "features": [
+    {
+      "kind": "takeoff",
+      "name": "Emberger Alm",
+      "x": -1916,
+      "y": 1017,
+      "elevation": 1887
+    },
+    {
+      "kind": "takeoff",
+      "name": "Rottenstein",
+      "x": 3949,
+      "y": 52,
+      "elevation": 1292
+    },
+    {
+      "kind": "landing",
+      "name": "Landeplatz",
+      "x": 1294,
+      "y": -2392,
+      "elevation": 590
+    },
+    {
+      "kind": "village",
+      "name": "Greifenburg",
+      "x": 413,
+      "y": -1933,
+      "elevation": 636
+    },
+    {
+      "kind": "village",
+      "name": "Berg",
+      "x": -2958,
+      "y": -2282,
+      "elevation": 686
+    },
+    {
+      "kind": "village",
+      "name": "Bruggen",
+      "x": 1487,
+      "y": -3162,
+      "elevation": 586
+    },
+    {
+      "kind": "peak",
+      "name": "Gaugen",
+      "x": 2611,
+      "y": 2084,
+      "elevation": 2195
+    },
+    {
+      "kind": "peak",
+      "name": "Dolzer",
+      "x": 2156,
+      "y": 2216,
+      "elevation": 2170
+    },
+    {
+      "kind": "peak",
+      "name": "Kreuzkofel",
+      "x": 3718,
+      "y": 1065,
+      "elevation": 1841
+    },
+    {
+      "kind": "peak",
+      "name": "Naßfeldriegel",
+      "x": -2157,
+      "y": 1841,
+      "elevation": 2237
+    },
+    {
+      "kind": "peak",
+      "name": "Hochtristen",
+      "x": -3023,
+      "y": 3048,
+      "elevation": 2535
+    },
+    {
+      "kind": "peak",
+      "name": "Schwarzstein",
+      "x": -1789,
+      "y": 3486,
+      "elevation": 2264
+    }
+  ],
+  "hotspots": [
+    {
+      "x": -1127,
+      "y": 10,
+      "elevation": 1547,
+      "probability": 0.937
+    },
+    {
+      "x": -2333,
+      "y": 298,
+      "elevation": 1571,
+      "probability": 0.901
+    },
+    {
+      "x": -4798,
+      "y": 1108,
+      "elevation": 2021,
+      "probability": 0.774
+    },
+    {
+      "x": 3200,
+      "y": 1526,
+      "elevation": 1911,
+      "probability": 0.745
+    },
+    {
+      "x": -1232,
+      "y": 925,
+      "elevation": 1797,
+      "probability": 0.737
+    },
+    {
+      "x": 3725,
+      "y": 873,
+      "elevation": 1765,
+      "probability": 0.724
+    },
+    {
+      "x": -2307,
+      "y": 1134,
+      "elevation": 1931,
+      "probability": 0.677
+    },
+    {
+      "x": 1496,
+      "y": 533,
+      "elevation": 1591,
+      "probability": 0.662
+    },
+    {
+      "x": -4431,
+      "y": 350,
+      "elevation": 1727,
+      "probability": 0.652
+    },
+    {
+      "x": -3041,
+      "y": 2989,
+      "elevation": 2500,
+      "probability": 0.649
+    },
+    {
+      "x": -1861,
+      "y": -382,
+      "elevation": 1384,
+      "probability": 0.629
+    },
+    {
+      "x": 1968,
+      "y": -147,
+      "elevation": 1410,
+      "probability": 0.596
+    },
+    {
+      "x": 1810,
+      "y": 1814,
+      "elevation": 1952,
+      "probability": 0.588
+    },
+    {
+      "x": 4302,
+      "y": 271,
+      "elevation": 1433,
+      "probability": 0.551
+    }
+  ],
+  "attribution": [
+    "Terrain: AWS Terrain Tiles (Mapzen), incl. data © Land Kärnten / data.gv.at, CC BY 4.0",
+    "Map features: © OpenStreetMap contributors, ODbL",
+    "Thermal hotspots: thermal.kk7.ch by M. von Känel, CC BY-NC-SA 4.0"
+  ]
+}

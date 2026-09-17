@@ -1,10 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<title>Thermals</title>
-<head>
-    <script src="main.js"></script>
-</head>
-<body>
-<div id="game"></div>
-</body>
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#1f3b2c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Thermiek centreren</title>
+    <script type="module" crossorigin src="./assets/index-D34pFgxE.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/Geometry-CZGVBKwE.js">
+    <link rel="modulepreload" crossorigin href="./assets/Filter-DM8SVgg4.js">
+    <link rel="modulepreload" crossorigin href="./assets/canvasUtils-BwcAxi36.js">
+    <link rel="modulepreload" crossorigin href="./assets/Cache-DOCLyTZt.js">
+    <link rel="modulepreload" crossorigin href="./assets/GCManagedHash-1mXRsHGx.js">
+    <link rel="modulepreload" crossorigin href="./assets/RenderTargetSystem-CqGxZEHS.js">
+    <link rel="modulepreload" crossorigin href="./assets/getTextureBatchBindGroup-CCNGb0nl.js">
+    <link rel="modulepreload" crossorigin href="./assets/GraphicsContext-2whGo5rH.js">
+    <link rel="modulepreload" crossorigin href="./assets/CanvasPool-BaexORx5.js">
+    <link rel="modulepreload" crossorigin href="./assets/BufferResource-CsatF336.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-DIApGUlt.css">
+  </head>
+  <body>
+    <div id="stage"></div>
+
+    <div id="loading" class="screen"><p data-i18n="loading"></p></div>
+
+    <div id="menu" class="screen" hidden>
+      <div class="menu-card">
+        <h1 data-i18n="app.title"></h1>
+        <p class="subtitle" data-i18n="app.subtitle"></p>
+        <h2 data-i18n="menu.site"></h2>
+        <div id="site-list" class="chip-list"></div>
+        <h2 data-i18n="menu.difficulty"></h2>
+        <div id="difficulty-list" class="chip-list"></div>
+        <p id="difficulty-description" class="chip-description"></p>
+        <h2 data-i18n="menu.levels"></h2>
+        <ol id="level-list" class="level-list"></ol>
+        <div class="menu-actions">
+          <button type="button" id="btn-howto" class="secondary" data-i18n="menu.howToPlay"></button>
+          <button type="button" id="btn-settings" class="secondary" data-i18n="menu.settings"></button>
+        </div>
+        <details class="credits">
+          <summary data-i18n="credits"></summary>
+          <ul id="credits-list"></ul>
+        </details>
+      </div>
+    </div>
+
+    <div id="game-ui" hidden>
+      <div class="hud">
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.altitude"></span>
+          <span class="hud-value" id="hud-altitude"></span>
+          <span class="hud-sub"><span data-i18n="hud.heightAboveGround"></span> <span id="hud-agl"></span></span>
+        </div>
+        <div class="hud-cell hud-vario">
+          <span class="hud-label" data-i18n="hud.vario"></span>
+          <span class="hud-value" id="hud-vario"></span>
+          <span class="hud-sub"><span data-i18n="hud.average"></span> <span id="hud-average"></span></span>
+        </div>
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.time"></span>
+          <span class="hud-value" id="hud-time"></span>
+          <span class="hud-sub"><span data-i18n="hud.goal"></span> <span id="hud-goal"></span></span>
+        </div>
+      </div>
+
+      <div class="side-buttons">
+        <button type="button" id="btn-pause" class="round" data-i18n-aria="hud.pause">❚❚</button>
+        <button type="button" id="btn-zoom-in" class="round" data-i18n-aria="hud.zoomIn">+</button>
+        <button type="button" id="btn-zoom-out" class="round" data-i18n-aria="hud.zoomOut">−</button>
+      </div>
+
+      <div id="legend" class="legend">
+        <div class="legend-scale"><span data-i18n="legend.sink"></span><span class="legend-bar"></span><span data-i18n="legend.lift"></span></div>
+        <div class="legend-markers">
+          <span id="legend-core"><i class="marker-core"></i><span data-i18n="legend.core"></span></span>
+        </div>
+      </div>
+
+      <div class="brake left" id="brake-left" data-i18n-aria="hud.brakeLeft">
+        <div class="brake-handle"></div><span class="brake-label">L</span>
+      </div>
+      <div class="brake right" id="brake-right" data-i18n-aria="hud.brakeRight">
+        <div class="brake-handle"></div><span class="brake-label">R</span>
+      </div>
+    </div>
+
+    <dialog id="dialog"></dialog>
+
+  </body>
 </html>
