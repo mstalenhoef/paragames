@@ -1,28 +1,35 @@
-const CLIMB_THRESHOLD = 0.1;
-const SINK_THRESHOLD = -2.5;
-const VOLUME = 0.12;
+import defaultProfileText from './Skytraxx.vtp?raw';
+import { parseToneProfile, varioTone, type ToneProfile, type VarioThresholds } from './tone-profile.ts';
 
-/** Beep frequency and interval for a climb rate, following common vario conventions. */
-export function beepFor(climbRate: number): { frequency: number; period: number } {
-  const w = Math.min(climbRate, 6);
-  return {
-    frequency: 650 + 140 * w,
-    period: Math.max(0.12, 0.55 - 0.075 * w),
-  };
-}
+const VOLUME = 0.12;
+/** How far ahead beeps are scheduled; the scheduler runs every 25 ms. */
+const LOOKAHEAD = 0.1;
+const MIN_BEEP_LENGTH = 0.02;
+const EDGE_RAMP = 0.005;
+const DEFAULT_THRESHOLDS: VarioThresholds = { climb: 0.1, sink: -2.5 };
 
 /**
- * Audio vario: rising beeps in lift, a low continuous tone in strong sink.
+ * Audio vario driven by a tone profile (.vtp): beeps whose pitch, rate and length follow
+ * the climb rate, or a continuous tone where the profile's duty cycle is 1.
+ * Silent between the sink and climb thresholds.
  * The AudioContext must be resumed from a user gesture (iOS).
  */
 export class VarioSound {
+  private readonly profile: ToneProfile;
+  private readonly thresholds: VarioThresholds;
   private ctx: AudioContext | null = null;
   private oscillator: OscillatorNode | null = null;
   private gain: GainNode | null = null;
   private climbRate = 0;
   private enabled = true;
+  private continuous = false;
   private nextBeepTime = 0;
   private timer: number | null = null;
+
+  constructor(profile: ToneProfile = parseToneProfile(defaultProfileText), thresholds: VarioThresholds = DEFAULT_THRESHOLDS) {
+    this.profile = profile;
+    this.thresholds = thresholds;
+  }
 
   /** Call from a user gesture handler. */
   async unlock(): Promise<void> {
@@ -60,44 +67,68 @@ export class VarioSound {
   }
 
   private silence(): void {
-    if (this.ctx && this.gain) {
-      this.gain.gain.cancelScheduledValues(this.ctx.currentTime);
-      this.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.01);
+    if (this.ctx && this.gain && this.oscillator) {
+      const now = this.ctx.currentTime;
+      this.gain.gain.cancelScheduledValues(now);
+      this.gain.gain.setTargetAtTime(0, now, 0.01);
+      this.oscillator.frequency.cancelScheduledValues(now);
     }
+    this.continuous = false;
+    this.nextBeepTime = 0;
   }
 
   private schedule(): void {
     const ctx = this.ctx;
-    const gain = this.gain;
-    const osc = this.oscillator;
-    if (!ctx || !gain || !osc || !this.enabled || ctx.state !== 'running') return;
+    const gain = this.gain?.gain;
+    const frequency = this.oscillator?.frequency;
+    if (!ctx || !gain || !frequency || !this.enabled || ctx.state !== 'running') return;
     const now = ctx.currentTime;
-    const w = this.climbRate;
+    const tone = varioTone(this.profile, this.climbRate, this.thresholds);
 
-    if (w >= CLIMB_THRESHOLD) {
-      const lookahead = 0.1;
-      if (this.nextBeepTime < now) this.nextBeepTime = now;
-      while (this.nextBeepTime < now + lookahead) {
-        const { frequency, period } = beepFor(w);
-        const start = this.nextBeepTime;
-        const length = period * 0.5;
-        osc.frequency.setValueAtTime(frequency, start);
-        osc.frequency.linearRampToValueAtTime(frequency * 1.04, start + length);
-        gain.gain.setValueAtTime(0, start);
-        gain.gain.linearRampToValueAtTime(VOLUME, start + 0.008);
-        gain.gain.setValueAtTime(VOLUME, start + length - 0.01);
-        gain.gain.linearRampToValueAtTime(0, start + length);
-        this.nextBeepTime = start + period;
+    if (!tone) {
+      if (this.continuous) {
+        this.continuous = false;
+        gain.cancelScheduledValues(now);
+        frequency.cancelScheduledValues(now);
+        gain.setTargetAtTime(0, now, EDGE_RAMP);
       }
-    } else if (w <= SINK_THRESHOLD) {
-      this.nextBeepTime = 0;
-      osc.frequency.setTargetAtTime(Math.max(180, 380 + 40 * w), now, 0.05);
-      gain.gain.cancelScheduledValues(now);
-      gain.gain.setTargetAtTime(VOLUME * 0.5, now, 0.05);
-    } else {
-      this.nextBeepTime = 0;
-      gain.gain.cancelScheduledValues(now);
-      gain.gain.setTargetAtTime(0, now, 0.02);
+      // Scheduled beeps play out; the next one starts as soon as the climb threshold is reached.
+      if (this.nextBeepTime < now) this.nextBeepTime = 0;
+      return;
+    }
+    const level = VOLUME * tone.gain;
+
+    if (tone.dutyCycle >= 0.999) {
+      if (!this.continuous) {
+        // Drop beeps that were scheduled ahead and switch to a steady tone.
+        gain.cancelScheduledValues(now);
+        frequency.cancelScheduledValues(now);
+        this.continuous = true;
+      }
+      frequency.setTargetAtTime(tone.frequency, now, 0.02);
+      gain.setTargetAtTime(level, now, 0.01);
+      return;
+    }
+
+    if (this.continuous) {
+      this.continuous = false;
+      gain.cancelScheduledValues(now);
+      frequency.cancelScheduledValues(now);
+      gain.setTargetAtTime(0, now, EDGE_RAMP);
+      this.nextBeepTime = now + 4 * EDGE_RAMP;
+    }
+    if (this.nextBeepTime < now) this.nextBeepTime = now;
+
+    while (this.nextBeepTime < now + LOOKAHEAD) {
+      const start = this.nextBeepTime;
+      const length = Math.max(MIN_BEEP_LENGTH, tone.period * tone.dutyCycle);
+      const ramp = Math.min(EDGE_RAMP, length / 4);
+      frequency.setValueAtTime(tone.frequency, start);
+      gain.setValueAtTime(0, start);
+      gain.linearRampToValueAtTime(level, start + ramp);
+      gain.setValueAtTime(level, start + length - ramp);
+      gain.linearRampToValueAtTime(0, start + length);
+      this.nextBeepTime = start + Math.max(tone.period, length + MIN_BEEP_LENGTH);
     }
   }
 }

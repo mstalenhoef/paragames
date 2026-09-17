@@ -1,7 +1,7 @@
 /** Dutch messages. This catalog defines the set of keys every locale must provide. */
 export const nl = {
   'app.title': 'Thermiek centreren',
-  'app.subtitle': 'Leer de kern van de thermiekbel te vinden door je bocht te openen en te verkrappen.',
+  'app.subtitle': 'Leer de kern van de thermiekbel te vinden.',
 
   'menu.site': 'Vlieggebied',
   'menu.levels': 'Niveaus',
@@ -11,8 +11,8 @@ export const nl = {
 
   'howToPlay.title': 'Zo centreer je',
   'howToPlay.body':
-    'Luister naar de vario. Wordt het stijgen sterker, open dan je bocht een paar seconden zodat je richting de kern schuift. ' +
-    'Wordt het stijgen weer zwakker, verkrap dan je bocht zodat je in het goede deel blijft. ' +
+    'Luister naar de vario. Wordt het stijgen sterker, maak dan je bocht wat ruimer  zodat je richting de kern schuift. ' +
+    'Wordt het stijgen weer zwakker, verkrap dan je bocht zodat je terug draait naar de betere lift. ' +
     'Een steilere bocht is krapper, maar je daalt er ook sneller mee.',
   'howToPlay.controlsTouch': 'Telefoon: houd de linker- of rechterrem ingedrukt en schuif omlaag voor meer rem.',
   'howToPlay.controlsKeyboard':
