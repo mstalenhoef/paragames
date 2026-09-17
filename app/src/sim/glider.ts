@@ -66,6 +66,15 @@ function straightSink(symmetricBrake: number, p: GliderParams): number {
   return p.minSink + p.sinkCurvature * (symmetricBrake - p.minSinkBrake) ** 2;
 }
 
+/** Circle flown with one brake held at a constant position, once the bank has settled. */
+export function steadyTurn(brake: number, p = DEFAULT_GLIDER): { radius: number; sinkRate: number } {
+  const bank = clamp(brake, 0, 1) * p.maxBank;
+  return {
+    radius: turnRadius(p.trimSpeed, bank),
+    sinkRate: (straightSink(0, p) + p.turnBrakeDrag * clamp(brake, 0, 1)) / Math.cos(bank) ** 1.5,
+  };
+}
+
 /** Turn radius in the air mass for a given airspeed and bank. */
 export function turnRadius(airspeed: number, bank: number): number {
   const tan = Math.tan(Math.abs(bank));

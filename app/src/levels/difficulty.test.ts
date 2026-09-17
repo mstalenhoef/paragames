@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Flight } from '../sim/flight.ts';
+import { Flight, type FlightSetup } from '../sim/flight.ts';
+import { DEFAULT_GLIDER, turnRadius } from '../sim/glider.ts';
 import { FlatTerrain } from '../sim/terrain.ts';
 import { Thermal } from '../sim/thermal.ts';
 import { DIFFICULTIES, findDifficulty } from './difficulty.ts';
@@ -22,7 +23,7 @@ describe('difficulty', () => {
     expect(easyThermal.sinkRing).toBe(0);
     easyThermal.cores.forEach((core, i) => expect(core.radius).toBeCloseTo(hardThermal.cores[i].radius * 3));
     expect(easyThermal.x).toBe(hardThermal.x);
-    expect(easyThermal.cores[0].strength).toBe(hardThermal.cores[0].strength);
+    expect(easyThermal.cores[0].strength).toBeLessThan(hardThermal.cores[0].strength);
   });
 
   it('puts medium between easy and hard', () => {
@@ -70,8 +71,41 @@ describe('difficulty', () => {
     expect(lossWhenOffCenter(medium)).toBeLessThan(lossWhenOffCenter(hard));
   });
 
+  it.each([
+    { lesson: 0, seed: 1 },
+    { lesson: 1, seed: 42 },
+    { lesson: 2, seed: 1234 },
+  ])('does not climb faster than hard when circling optimally (lesson $lesson, seed $seed)', ({ lesson, seed }) => {
+    const hardBest = bestSimulatedClimb(createSetup(SITES[0], LESSONS[lesson], seed, [], hard));
+    for (const level of [easy, medium]) {
+      const best = bestSimulatedClimb(createSetup(SITES[0], LESSONS[lesson], seed, [], level));
+      expect(best).toBeLessThanOrEqual(hardBest + 0.1);
+      expect(best).toBeGreaterThan(hardBest - 0.35);
+    }
+  });
+
   it('falls back to medium for unknown values', () => {
     expect(findDifficulty(undefined).id).toBe('medium');
     expect(findDifficulty('extreme').id).toBe('medium');
   });
 });
+
+/** Best climb rate over a range of one-sided brake positions and circle centers near the strongest core. */
+function bestSimulatedClimb(base: FlightSetup): number {
+  const setup = { ...base, goalAltitude: 9999 };
+  const core = new Flight(setup, new FlatTerrain(0)).thermals[0].strongestCoreAt(1990, 0, setup.air.wind);
+  let best = -Infinity;
+  for (let brake = 0.25; brake <= 0.95; brake += 0.1) {
+    const r = turnRadius(DEFAULT_GLIDER.trimSpeed, brake * DEFAULT_GLIDER.maxBank);
+    for (let ox = -60; ox <= 60; ox += 20) {
+      for (let oy = -60; oy <= 60; oy += 20) {
+        const flight = new Flight({ ...setup, start: { x: core.x + ox - r, y: core.y + oy, z: 1990, heading: 0 } }, new FlatTerrain(0));
+        for (let i = 0; i < 120 * 10; i++) flight.step({ left: 0, right: brake });
+        const z0 = flight.glider.z;
+        for (let i = 0; i < 120 * 30; i++) flight.step({ left: 0, right: brake });
+        best = Math.max(best, (flight.glider.z - z0) / 30);
+      }
+    }
+  }
+  return best;
+}
