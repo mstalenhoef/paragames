@@ -121,13 +121,13 @@ button.round {
   line-height: 1.4;
 }
 
-.site-list {
+.chip-list {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.site-list button {
+.chip-list button {
   flex: 1 1 auto;
   background: white;
   color: var(--text);
@@ -136,7 +136,14 @@ button.round {
   padding: 10px 14px;
 }
 
-.site-list button[aria-pressed='true'] {
+.chip-description {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.chip-list button[aria-pressed='true'] {
   background: var(--accent);
   border-color: var(--accent);
   color: white;

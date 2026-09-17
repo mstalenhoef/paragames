@@ -5,6 +5,7 @@ import { GridTerrain } from '../sim/terrain.ts';
 import type { TerrainMeta } from '../terrain/types.ts';
 import { createSetup, LESSONS } from './lessons.ts';
 import { SITES } from './sites.ts';
+import { DIFFICULTIES } from './difficulty.ts';
 
 function loadTerrain(id: string): { meta: TerrainMeta; terrain: GridTerrain } {
   const dir = new URL(`../../public/terrain/${id}/`, import.meta.url);
@@ -34,9 +35,10 @@ describe.each(SITES)('site $id', (site) => {
     }
   });
 
-  it.each(LESSONS)('lesson $id starts clear of terrain and is climbable', (lesson) => {
+  const cases = LESSONS.flatMap((lesson) => DIFFICULTIES.map((difficulty) => ({ lesson, difficulty })));
+  it.each(cases)('lesson $lesson.id ($difficulty.id) starts clear of terrain and is climbable', ({ lesson, difficulty }) => {
     for (const seed of [1, 2, 3, 42, 1234]) {
-      const setup = createSetup(site, lesson, seed, meta.hotspots);
+      const setup = createSetup(site, lesson, seed, meta.hotspots, difficulty);
       const { start } = setup;
       expect(start.z - terrain.elevationAt(start.x, start.y)).toBeGreaterThan(200);
       expect(setup.goalAltitude).toBeLessThan(setup.air.thermals[0].topAltitude - 300);

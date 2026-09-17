@@ -4,6 +4,7 @@ import { detectLocale, formatClimb, formatDuration, formatMeters, setLocale, t, 
 import { ControlInput } from './input/controls.ts';
 import { createSetup, goalAltitude, LESSONS, type Lesson } from './levels/lessons.ts';
 import { findSite, SITES, type Site } from './levels/sites.ts';
+import { DIFFICULTIES, findDifficulty, type DifficultyLevel } from './levels/difficulty.ts';
 import { climbColorCss } from './render/colors.ts';
 import { FlightView } from './render/flight-view.ts';
 import { FixedStepper, Flight } from './sim/flight.ts';
@@ -52,6 +53,7 @@ class Game {
   private state: State = 'menu';
   private site: Site;
   private lesson: Lesson = LESSONS[0];
+  private difficulty: DifficultyLevel;
   private siteRequest = 0;
   private flight: Flight | null = null;
   private wakeLock: WakeLockSentinel | null = null;
@@ -69,6 +71,7 @@ class Game {
   constructor(app: Application, site: Site, assets: SiteAssets) {
     this.app = app;
     this.site = site;
+    this.difficulty = findDifficulty(this.settings.difficulty);
     this.terrain = assets.terrain;
     this.view = new FlightView(app, assets.texture, assets.terrain.meta);
     this.view.orientation = this.settings.orientation;
@@ -90,7 +93,7 @@ class Game {
 
   /** Shows the start area of the selected site behind the menu. */
   private showSitePreview(): void {
-    this.flight = new Flight(createSetup(this.site, LESSONS[0], 1, this.terrain.meta.hotspots), this.terrain.terrain);
+    this.flight = new Flight(createSetup(this.site, LESSONS[0], 1, this.terrain.meta.hotspots, this.difficulty), this.terrain.terrain);
     this.view.setFlight(this.flight, NO_AIDS);
   }
 
@@ -104,6 +107,15 @@ class Game {
         }),
       ),
     );
+    $('difficulty-list').replaceChildren(
+      ...DIFFICULTIES.map((difficulty) =>
+        el('button', {
+          type: 'button',
+          textContent: t(difficulty.labelKey),
+          onclick: () => this.selectDifficulty(difficulty),
+        }),
+      ),
+    );
     $('btn-howto').onclick = () => this.showHowTo();
     $('btn-settings').onclick = () => this.showSettings();
     this.updateMenu();
@@ -112,6 +124,9 @@ class Game {
   private updateMenu(loading = false): void {
     const siteButtons = [...$('site-list').children] as HTMLButtonElement[];
     siteButtons.forEach((button, i) => button.setAttribute('aria-pressed', String(SITES[i] === this.site)));
+    const difficultyButtons = [...$('difficulty-list').children] as HTMLButtonElement[];
+    difficultyButtons.forEach((button, i) => button.setAttribute('aria-pressed', String(DIFFICULTIES[i] === this.difficulty)));
+    $('difficulty-description').textContent = t(this.difficulty.descriptionKey);
 
     $('level-list').replaceChildren(
       ...LESSONS.map((lesson) =>
@@ -128,6 +143,13 @@ class Game {
     );
     $('level-list').setAttribute('aria-busy', String(loading));
     $('credits-list').replaceChildren(...this.terrain.meta.attribution.map((line) => el('li', { textContent: line })));
+  }
+
+  private selectDifficulty(difficulty: DifficultyLevel): void {
+    this.difficulty = difficulty;
+    this.settings.difficulty = difficulty.id;
+    saveSettings(this.settings);
+    this.updateMenu();
   }
 
   private async selectSite(site: Site): Promise<void> {
@@ -223,7 +245,7 @@ class Game {
     const unlock = this.sound.unlock().catch(() => undefined);
     this.dialog.close();
     this.lesson = lesson;
-    this.flight = new Flight(createSetup(this.site, lesson, Math.floor(Math.random() * 2 ** 31), this.terrain.meta.hotspots), this.terrain.terrain);
+    this.flight = new Flight(createSetup(this.site, lesson, Math.floor(Math.random() * 2 ** 31), this.terrain.meta.hotspots, this.difficulty), this.terrain.terrain);
     this.view.setFlight(this.flight, lesson.aids);
     this.input.reset();
 
@@ -301,6 +323,8 @@ class Game {
     const title = t(flight.status === 'goal' ? 'result.goal' : flight.status === 'landed' ? 'result.landed' : 'result.outOfMap');
     const gain = flight.altitudeGain;
     const stats = el('dl', { className: 'stats' }, [
+      el('dt', { textContent: t('menu.difficulty') }),
+      el('dd', { textContent: `${t(this.difficulty.labelKey)} · ${this.site.name}` }),
       el('dt', { textContent: t('result.flightTime') }),
       el('dd', { textContent: formatDuration(flight.t) }),
       el('dt', { textContent: t('result.altitudeGain') }),

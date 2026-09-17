@@ -3,6 +3,7 @@ import type { FlightSetup } from '../sim/flight.ts';
 import { createRng, deg } from '../sim/math.ts';
 import type { ThermalConfig } from '../sim/thermal.ts';
 import type { ThermalHotspot } from '../terrain/types.ts';
+import { applyDifficulty, findDifficulty, type DifficultyLevel } from './difficulty.ts';
 import type { Site } from './sites.ts';
 
 export interface LessonAids {
@@ -114,8 +115,15 @@ export function goalAltitude(site: Site, lesson: Lesson): number {
 /**
  * Builds a flight; the seed varies the thermals so they cannot be memorized.
  * The lesson thermal sits at the site's trigger; the other hotspots get weaker thermals.
+ * Thermals are generated with hard settings and then widened/softened for the difficulty.
  */
-export function createSetup(site: Site, lesson: Lesson, seed: number, hotspots: readonly ThermalHotspot[] = []): FlightSetup {
+export function createSetup(
+  site: Site,
+  lesson: Lesson,
+  seed: number,
+  hotspots: readonly ThermalHotspot[] = [],
+  difficulty: DifficultyLevel = findDifficulty('hard'),
+): FlightSetup {
   const bearing = deg(site.startBearing);
   const start = {
     x: site.trigger.x + Math.sin(bearing) * START_DISTANCE,
@@ -132,7 +140,7 @@ export function createSetup(site: Site, lesson: Lesson, seed: number, hotspots: 
     air: {
       wind: { x: 0, y: 0 },
       ambient: -0.1,
-      thermals: [createThermal(site, lesson, seed), ...hotspotThermals(site, seed, hotspots)],
+      thermals: [createThermal(site, lesson, seed), ...hotspotThermals(site, seed, hotspots)].map((t) => applyDifficulty(t, difficulty)),
     },
   };
 }

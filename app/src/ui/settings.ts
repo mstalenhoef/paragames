@@ -1,3 +1,4 @@
+import type { Difficulty } from '../levels/difficulty.ts';
 import type { MapOrientation } from '../render/flight-view.ts';
 
 export interface Settings {
@@ -6,6 +7,7 @@ export interface Settings {
   /** Show thermal.kk7.ch hotspots on the map. */
   showHotspots: boolean;
   siteId?: string;
+  difficulty?: Difficulty;
 }
 
 const STORAGE_KEY = 'thermiek.settings';

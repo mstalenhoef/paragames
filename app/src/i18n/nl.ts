@@ -4,7 +4,15 @@ export const nl = {
   'app.subtitle': 'Leer de kern van de thermiekbel te vinden.',
 
   'menu.site': 'Vlieggebied',
+  'menu.difficulty': 'Moeilijkheid',
   'menu.levels': 'Niveaus',
+
+  'difficulty.easy': 'Makkelijk',
+  'difficulty.easy.description': 'Brede thermiek die geleidelijk zwakker wordt naar de rand, zonder dalende lucht eromheen.',
+  'difficulty.medium': 'Gemiddeld',
+  'difficulty.medium.description': 'Thermiek van gemiddelde breedte met een lichte dalende rand.',
+  'difficulty.hard': 'Moeilijk',
+  'difficulty.hard.description': 'Smalle kern die snel zwakker wordt, omringd door dalende lucht.',
   'menu.settings': 'Instellingen',
   'menu.howToPlay': 'Uitleg',
   'menu.start': 'Vliegen',
