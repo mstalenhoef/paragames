@@ -26,8 +26,8 @@ export const DEFAULT_GLIDER: GliderParams = {
   sinkCurvature: 1.6,
   turnBrakeDrag: 0.25,
   maxBank: deg(50),
-  rollTimeConstant: 0.8,
-  maxRollRate: deg(35),
+  rollTimeConstant: 0.5,
+  maxRollRate: deg(50),
 };
 
 /** Brake positions, 0 (released) to 1 (fully pulled). */
