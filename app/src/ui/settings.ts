@@ -1,5 +1,6 @@
 import type { Difficulty } from '../levels/difficulty.ts';
 import type { MapOrientation } from '../render/flight-view.ts';
+import type { GliderDesignId } from '../render/glider-graphic.ts';
 
 export interface Settings {
   sound: boolean;
@@ -8,6 +9,7 @@ export interface Settings {
   showHotspots: boolean;
   siteId?: string;
   difficulty?: Difficulty;
+  gliderDesign?: GliderDesignId;
 }
 
 const STORAGE_KEY = 'thermiek.settings';

@@ -65,6 +65,7 @@ export const nl = {
   'settings.mapOrientation': 'Kaartoriëntatie',
   'settings.northUp': 'Noorden boven',
   'settings.headingUp': 'Vliegrichting boven',
+  'settings.gliderColor': 'Kleur scherm (Swing Serac RS)',
   'settings.hotspots': 'Thermiek-hotspots',
   'settings.hotspotsHint': 'Plekken waar vaak thermiek gevonden wordt, volgens duizenden vluchten (thermal.kk7.ch). Hoe feller, hoe groter de kans.',
   'settings.close': 'Sluiten',

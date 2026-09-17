@@ -7,6 +7,7 @@ import { findSite, SITES, type Site } from './levels/sites.ts';
 import { DIFFICULTIES, findDifficulty, type DifficultyLevel } from './levels/difficulty.ts';
 import { climbColorCss } from './render/colors.ts';
 import { FlightView } from './render/flight-view.ts';
+import { findGliderDesign, GLIDER_DESIGNS } from './render/glider-graphic.ts';
 import { FixedStepper, Flight } from './sim/flight.ts';
 import { loadTerrain, type LoadedTerrain } from './terrain/load.ts';
 import { Dialog, el } from './ui/dialog.ts';
@@ -76,6 +77,7 @@ class Game {
     this.view = new FlightView(app, assets.texture, assets.terrain.meta);
     this.view.orientation = this.settings.orientation;
     this.view.showHotspots = this.settings.showHotspots;
+    this.view.setGliderDesign(findGliderDesign(this.settings.gliderDesign));
     this.input = new ControlInput({ left: $('brake-left'), right: $('brake-right') });
     this.sound.setEnabled(this.settings.sound);
 
@@ -174,7 +176,9 @@ class Game {
       const { zoom, orientation, showHotspots } = this.view;
       this.view.destroy();
       this.view = new FlightView(this.app, assets.texture, assets.terrain.meta);
+      const design = this.view.design;
       Object.assign(this.view, { zoom, orientation, showHotspots });
+      this.view.setGliderDesign(design);
       this.terrain = assets.terrain;
     }
     this.showSitePreview();
@@ -400,6 +404,18 @@ class Game {
             this.view.orientation = orientation;
             saveSettings(this.settings);
           }),
+        ]),
+        el('div', { className: 'setting' }, [
+          el('span', { textContent: t('settings.gliderColor') }),
+          segmented(
+            GLIDER_DESIGNS.map((d) => [d.id, d.name]),
+            findGliderDesign(this.settings.gliderDesign).id,
+            (id) => {
+              this.settings.gliderDesign = id;
+              this.view.setGliderDesign(findGliderDesign(id));
+              saveSettings(this.settings);
+            },
+          ),
         ]),
         el('div', { className: 'setting' }, [
           el('span', { textContent: t('settings.hotspots') }),

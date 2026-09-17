@@ -3,6 +3,7 @@ import type { LessonAids } from '../levels/lessons.ts';
 import type { Flight } from '../sim/flight.ts';
 import type { TerrainMeta, ThermalHotspot } from '../terrain/types.ts';
 import { climbColor, climbColorRgb } from './colors.ts';
+import { drawGlider, findGliderDesign, type GliderDesign } from './glider-graphic.ts';
 
 export type MapOrientation = 'northUp' | 'headingUp';
 
@@ -48,6 +49,7 @@ export class FlightView {
   private readonly labels = new Container();
   private readonly glider = new Graphics();
   private readonly featureLabels: FeatureLabel[] = [];
+  private gliderDesign: GliderDesign = findGliderDesign(undefined);
 
   private readonly hotspotData: ThermalHotspot[];
   private drawnHotspotZoom = 0;
@@ -94,7 +96,7 @@ export class FlightView {
       this.labels.addChild(text);
     }
 
-    this.drawGlider();
+    drawGlider(this.glider, this.gliderDesign);
   }
 
   setFlight(flight: Flight, aids: LessonAids): void {
@@ -106,6 +108,15 @@ export class FlightView {
     this.trailHead.clear();
     this.markers.clear();
     this.overlaySprite.visible = aids.liftOverlay;
+  }
+
+  setGliderDesign(design: GliderDesign): void {
+    this.gliderDesign = design;
+    drawGlider(this.glider, design);
+  }
+
+  get design(): GliderDesign {
+    return this.gliderDesign;
   }
 
   get showHotspots(): boolean {
@@ -243,23 +254,6 @@ export class FlightView {
     }
   }
 
-  /** Paraglider seen from above, nose pointing up, in screen pixels. */
-  private drawGlider(): void {
-    const g = this.glider;
-    const half = 22;
-    // Heading pointer ahead of the wing.
-    g.poly([0, -24, -6, -15, 6, -15]).fill({ color: 0xffffff, alpha: 0.9 }).stroke({ width: 1, color: 0x1d2a1d });
-    // Wing: straight leading edge, tips swept back, elliptical trailing edge.
-    g.moveTo(-half, 4)
-      .quadraticCurveTo(-half + 2, -8, 0, -9)
-      .quadraticCurveTo(half - 2, -8, half, 4)
-      .quadraticCurveTo(0, -1, -half, 4)
-      .closePath()
-      .fill({ color: 0xff7a1a })
-      .stroke({ width: 1.5, color: 0x3a1a00 });
-    for (const x of [-12, -4, 4, 12]) g.moveTo(x, -8 + Math.abs(x) * 0.1).lineTo(x, 1.5 + Math.abs(x) * 0.12).stroke({ width: 0.8, color: 0x3a1a00, alpha: 0.35 });
-    g.circle(0, 5, 3.2).fill({ color: 0x1e3a8a }).stroke({ width: 1, color: 0xffffff });
-  }
 
   destroy(): void {
     this.app.stage.removeChild(this.camera, this.labels, this.glider);
